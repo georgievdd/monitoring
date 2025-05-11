@@ -1,0 +1,25 @@
+spring:
+  application:
+    name:
+      "demo"
+  main:
+    banner-mode: off
+
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/demo"
+    username: "demo"
+    password: "demo"
+  jpa:
+    generate-ddl: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,info
+  metrics:
+    enable:
+      all: true
