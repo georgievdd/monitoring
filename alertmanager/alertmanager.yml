@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 10s   # время ожидания, после которого повторно отправлять уведомление
+
+route:
+  receiver: "default-receiver"
+  routes:
+    - receiver: "postgres-receiver"
+      matchers:
+        - job="postgres"
+
+receivers:
+  - name: "default-receiver"
+  - name: "postgres-receiver"
+    telegram_configs:
+      - bot_token: "8128386192:AAETa2qVzHLP8a34J7KSEJms7yGXGjbGh6U"
+        chat_id: -1002067160886
+        api_url: "https://api.telegram.org"
+        parse_mode: "HTML"
+        send_resolved: true

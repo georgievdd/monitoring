@@ -1,0 +1,11 @@
+groups:
+  - name: alert_rules
+    rules:
+      - alert: service_down # имя оповещения
+        expr: pg_up == 0 # условие
+        for: 20s # должно выполняться не менее 20 секунд
+        labels:
+          severity: critical # warning
+        annotations:
+          summary: "Service {{ $labels.service }} down!"
+          description: "{{ $labels.service }} of job {{ $labels.job }} has been down for more than 1 minute"

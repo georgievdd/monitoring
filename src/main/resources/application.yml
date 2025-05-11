@@ -6,11 +6,13 @@ spring:
     banner-mode: off
 
   datasource:
-    url: "jdbc:postgresql://localhost:5432/demo"
+    url: "jdbc:postgresql://db:5432/demo"
     username: "demo"
     password: "demo"
   jpa:
     generate-ddl: true
+    hibernate:
+      ddl-auto: update
 
 server:
   port: 8080
@@ -19,7 +21,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus,info
+        include: health,prometheus,info # http://localhost:8080/actuator/prometheus
   metrics:
     enable:
       all: true

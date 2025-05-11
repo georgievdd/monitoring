@@ -1,0 +1,14 @@
+1) added prometheus. http://localhost:8080/actuator/prometheus
+2) added custom metrics users_squared, currentTime
+3) Added postgres-exporter for exporting metrics from db.
+4) added prometheus.yml, for jobs and scrape configuration and exporters configuration.
+http://localhost:9090/targets?search= - видны наши джобы
+сказать про pg_up 1
+Проверить в строке поиска метрик, что все работает.
+win: Invoke-WebRequest -Uri "http://localhost:8080/users" -Method POST -ContentType "application/json" -Body '{"lastName": "lastName", "firstName": "firstName"}'
+СКАЗАТЬ ПРО RULES
+5) grafana. localhost:3000
+- connection->datasources->add data source->prometheus
+- dashboards->create->add new panel->prometheus. Показать на примере users_squared и метрик из бд
+- пример с готовым шаблоном для постгреса 9628.
+6) alerting, prometheus + tg. Сказать про https://api.telegram.org/bot[TOKEN]/getUpdates

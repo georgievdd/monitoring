@@ -8,54 +8,75 @@ services:
       POSTGRES_PASSWORD: demo
     volumes:
       - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - internal-network
 
   app:
     build: .
-    ports: ["8080:8080"]
+    ports:
+      - "8080:8080"
     depends_on:
       - db
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - internal-network
 
   postgres_exporter:
-    image: prometheuscommunity/postgres-exporter:latest            # сбор метрик PostgreSQL :contentReference[oaicite:5]{index=5}
+    image: prometheuscommunity/postgres-exporter:latest
     environment:
-      DATA_SOURCE_NAME: "postgresql://postgres:example@db:5432/appdb?sslmode=disable"
-    ports: ["9187:9187"]
+      DATA_SOURCE_NAME: "postgresql://demo:demo@db:5432/demo?sslmode=disable"
+    ports:
+      - "9187:9187"
     depends_on:
       - db
+    networks:
+      - internal-network
 
   prometheus:
-    image: prom/prometheus:v2.48.1                                  # официальный образ Prometheus :contentReference[oaicite:6]{index=6}
+    image: prom/prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules/:/etc/prometheus/rules/ # хз почему не работает
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--web.enable-lifecycle"
-    ports: ["9090:9090"]
+    ports:
+      - "9090:9090"
     depends_on:
       - app
       - postgres_exporter
-
-  alertmanager:
-    image: prom/alertmanager:v0.27.0
-    volumes:
-      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-    ports: ["9093:9093"]
+    networks:
+      - internal-network
 
   grafana:
-    image: grafana/grafana:10.4.1
+    image: grafana/grafana:latest
     environment:
-      GF_INSTALL_PLUGINS: "grafana-postgres-datasource"             # автоматически установит плагин для Postgres :contentReference[oaicite:7]{index=7}
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./provisioning:/etc/grafana/provisioning                   # datasource и дашборды
-    ports: ["3000:3000"]
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+    ports:
+      - "3000:3000"
     depends_on:
       - prometheus
       - db
+    networks:
+      - internal-network
+
+  alertmanager:
+    image: prom/alertmanager
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks:
+      - internal-network
 
 volumes:
   db-data:
   grafana-data:
+
+networks:
+  internal-network:
+    driver: bridge

@@ -1,0 +1,6 @@
+groups:
+  - name: my_custom_metrics
+    interval: 7s # если не указан, будет использоваться evaluation_interval
+    rules:
+      - record: users_squared_mult_current_time
+        expr: users_squared / current_time
