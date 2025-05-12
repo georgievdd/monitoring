@@ -12,8 +12,8 @@ receivers:
   - name: "default-receiver"
   - name: "postgres-receiver"
     telegram_configs:
-      - bot_token: "8128386192:AAETa2qVzHLP8a34J7KSEJms7yGXGjbGh6U"
-        chat_id: -1002067160886
+      - bot_token: "BOT_TOKEN"
+        chat_id: CHAT_ID (с минусом, без ковычек)
         api_url: "https://api.telegram.org"
         parse_mode: "HTML"
         send_resolved: true
